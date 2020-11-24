@@ -200,65 +200,6 @@ module FDN_core_x
     assign last_data_out = last_data_out_i[0];
     
     // ---- Запись коэффициентов ----
-//    // Счетчики коэффициентов по каналам
-//    always@(posedge clk)
-//    begin
-//        if(rst_all_i == '1)
-//            count_coef_ch_i <= '0;
-//        else
-//        begin
-//            if(last_coef_in == '1 & vld_coef_in == '1)
-//                count_coef_ch_i <= '0;
-//            else if(count_coef_ch_i == N_chanals-1 & vld_coef_in == '1)
-//                count_coef_ch_i <= '0;
-//            else if(vld_coef_in == '1)
-//                count_coef_ch_i <= count_coef_ch_i+1;
-//        end
-//    end
-//    // Счетчики коэффициентов по диаграммам
-//    always@(posedge clk)
-//    begin
-//        if(rst_all_i == '1)
-//            count_coef_dn_i <= '0;
-//        else
-//        begin
-//            if(last_coef_in == '1 & vld_coef_in == '1)
-//                count_coef_dn_i <= 0;
-//            else if(count_coef_ch_i == N_chanals-1 & vld_coef_in == '1 & count_coef_dn_i == N_DN-1)
-//                count_coef_dn_i <= 0;
-//            else if(count_coef_ch_i == N_chanals-1 & vld_coef_in == '1)
-//                count_coef_dn_i <= count_coef_dn_i+1;
-//        end
-//    end    
-//    // Дешифратор
-//    always@(posedge clk)
-//    begin
-//        if(rst_all_i == '1)    
-//            en_coef_i <= '0;
-//        else
-//        begin
-//            for(n_dec=0; n_dec<N_DN; n_dec++)
-//                if(count_coef_dn_i == n_dec & vld_coef_in == '1) 
-//                    en_coef_i[n_dec] <= '1;
-//                else
-//                    en_coef_i[n_dec] <= '0;
-//        end
-//    end
-//    // Задержка коэффициентов
-//    always@(posedge clk)
-//    begin
-//        if(rst_all_i == '1)  
-//        begin    
-//            coefReIn_i <= '0;
-//            coefImIn_i <= '0;
-//        end
-//        else
-//        begin
-//            coefReIn_i <= coefReIn;
-//            coefImIn_i <= coefImIn;
-//        end
-//    end
-
     // Счетчики коэффициентов по каналам
     always@(posedge clk_coef)
     begin
@@ -349,7 +290,6 @@ module FDN_core_x
                         if(s_axil_arvalid == '1) 
                         begin
                             stateAXI      <= sr;
-//                            reg_axil_id_i <= s_axil_arid;
                         end  
                         s_axil_awready_i <= '0;
                         s_axil_arready_i <= '0;
@@ -367,7 +307,6 @@ module FDN_core_x
                         // Выбор режима работы (Фарроу или нет)
                         if(s_axil_awaddr == (AddrAXI | 32'h00000000))                        
                         begin
-//                            $display(AddrAXI | 32'h00000000);
                             stateAXI         <= sw1;
                             s_axil_bid_i     <= s_axil_awid;
                             s_axil_awready_i <= '1;
@@ -472,7 +411,6 @@ module FDN_core_x
                             stateAXI         <= s0;
                         end                        
                     end
-//                default :  stateAXI <= s0;
             endcase
         end
     end
