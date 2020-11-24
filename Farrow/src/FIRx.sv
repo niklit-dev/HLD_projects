@@ -5,7 +5,6 @@ module FIRx
     #(
         parameter wight_data_in  = 16, // Разрядность входных данных
         parameter width_data_out = 21, // Разрядность выходных данных
-//        parameter [5*32-1:0]wigth_fir = {32'd18,32'd18,32'd19,32'd18,32'd18},     // Разрядность на выходе данных fir-ов
         parameter wigth_fir_0 = 18, // Разрядность на выходе 0-го fir
         parameter wigth_fir_1 = 18, // Разрядность на выходе 1-го fir
         parameter wigth_fir_2 = 19, // Разрядность на выходе 2-го fir
@@ -28,24 +27,9 @@ module FIRx
         output last_out
     );
     
-//    wire vld_out_i;
-//    wire last_out_i;
     reg  [latency_fir-1:0]last_del_i;
     wire [wigth_fir_all-1:0]data_fir_i[polinom-1:0];
-//    wire [wigth_fir[0]-1:0]data_fir_i_0;
-//    wire [wigth_fir[1]-1:0]data_fir_i_1;
-//    wire [wigth_fir[2]-1:0]data_fir_i_2;
-//    wire [wigth_fir[3]-1:0]data_fir_i_3;
-//    wire [wigth_fir[4]-1:0]data_fir_i_4;
-    wire vld_fir_i[polinom-1:0];
-//    generate
-//    for(genvar j=polinom-1; j>=0; j--)
-//    begin : data_fir
-//        wire [wigth_fir[j]-1:0]data_fir_i[j];
-//    end
-//    endgenerate
-        
-        
+    wire vld_fir_i[polinom-1:0];      
         
     // Полином 0-го порядка
     fir_compiler_0 fir_pol_0_inst
@@ -123,20 +107,5 @@ module FIRx
     assign data_out[2] = data_fir_i[2][width_data_out-1:0];
     assign data_out[3] = data_fir_i[3][width_data_out-1:0];
     assign data_out[4] = data_fir_i[4][width_data_out-1:0];
-
-//    assign data_out[0][wigth_fir_0-1:0]              = data_fir_i[0][wigth_fir_0-1:0];
-//    assign data_out[0][width_data_out-1:wigth_fir_0] = data_fir_i[0][wigth_fir_0-1];
-    
-//    assign data_out[1][wigth_fir_1-1:0]              = data_fir_i[1][wigth_fir_1-1:0];
-//    assign data_out[1][width_data_out-1:wigth_fir_1] = data_fir_i[1][wigth_fir_1-1];
-    
-//    assign data_out[2][wigth_fir_2-1:0]              = data_fir_i[2][wigth_fir_2-1:0];
-//    assign data_out[2][width_data_out-1:wigth_fir_2] = data_fir_i[2][wigth_fir_2-1];
-    
-//    assign data_out[3][wigth_fir_3-1:0]              = data_fir_i[3][wigth_fir_3-1:0];
-//    assign data_out[3][width_data_out-1:wigth_fir_3] = data_fir_i[3][wigth_fir_3-1];
-    
-//    assign data_out[4][wigth_fir_4-1:0]              = data_fir_i[4][wigth_fir_4-1:0];
-//    assign data_out[4][width_data_out-1:wigth_fir_4] = data_fir_i[4][wigth_fir_4-1];
 
 endmodule
