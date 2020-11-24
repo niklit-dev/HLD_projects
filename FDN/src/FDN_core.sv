@@ -30,7 +30,6 @@ module FDN_core
 		output [wight_data_o-1:0]dataImOut 
 	);
 	
-    // !!!!!!!!!!!!!! Подумать как сделать подругому !!!!!!!!!!!!!!!!!
     function integer log2;
         input integer value;
         begin
@@ -39,17 +38,7 @@ module FDN_core
                 value = value>>1;
         end
     endfunction
-
-//	// Вход A комплексного умножителя
-//	wire [wight_comp_in(wight_data_i)*2-1:0]compInA_i;
-//	// Вход B комплексного умножителя
-//	wire [wight_comp_b_i*2-1:0]compInB_i;
-//    // Выход комплексного умножителя	
-//	wire [wight_comp_o_i-1:0]compOut_i;    	
-//	wire compEnaOut_i;
-//	// Входы памяти коэффициентов
-//	wire [log2(N_chanals)-1:0]addr_coef;
-
+	
     reg vld_data_out_i;
     reg [wight_mult+log2(N_chanals)-1:0]dataReOut_i;
 	reg [wight_mult+log2(N_chanals)-1:0]dataImOut_i; 
@@ -66,7 +55,7 @@ module FDN_core
 	reg [wight_comp_a_i*2-1:0]compInASh_i[2:0];
 	// Вход B комплексного умножителя
 	wire [wight_comp_b_i*2-1:0]compInB_i;
-    // Выход комплексного умножителя	
+        // Выход комплексного умножителя	
 	wire [wight_comp_o_i*2-1:0]compOut_i;    	
 	wire compEnaOut_i;
 	wire [wight_mult-1 : 0]compOut_Re_i;
@@ -74,7 +63,6 @@ module FDN_core
 	// ****
 	// ---- Память коэффициентов ----
 	// Вход адреса памяти коэффициентов
-//	reg [log2(N_chanals)-1:0]addr_coef_i;
 	reg [log2(N_chanals)-1:0]addr_coef_in_i;
 	reg [log2(N_chanals)-1:0]addr_coef_out_i;
 	// Вход данных
@@ -104,19 +92,19 @@ module FDN_core
 	// ---- Счетчик каналов ----
 	reg [log2(N_chanals)-1:0]chan_coef_i;
 
-    // Зануляем неиспользуемые входы A комплексного умножителя	
+        // Зануляем неиспользуемые входы A комплексного умножителя	
 	generate
         if(wight_comp_a_i != wight_data_i)begin: A_Zeros
             assign compInA_i[             wight_comp_a_i-1 :                wight_data_i] = dataReIn[wight_data_i-1];
             assign compInA_i[           wight_comp_a_i*2-1 : wight_data_i+wight_comp_a_i] = dataReIn[wight_data_i-1];
         end
     endgenerate
-	// Вход данных на комплексном умножителе А
+    // Вход данных на комплексном умножителе А
     assign compInA_i[               wight_data_i-1 :              0] = dataReIn;
     assign compInA_i[wight_data_i+wight_comp_a_i-1 : wight_comp_a_i] = dataImIn;
     
     // Задержка входа данных на комплексном умножителе А
-	always@(posedge clk)
+    always@(posedge clk)
     begin
         if(rst == '1) 
         begin
@@ -179,77 +167,19 @@ module FDN_core
     // Действительная часть на выходе комплексного умножителя
     assign compOut_Re_i = compOut_i[               wight_mult-1 :              0];
     assign compOut_Im_i = compOut_i[wight_mult+wight_comp_o_i-1 : wight_comp_o_i];
-	
-//	// Счетчик входных коэффыициентов
-//	always @(posedge clk) 
-//	begin
-//        if(rst == '1)
-//            count_coef_i <= '0;
-//        else
-//        begin
-//            if((count_coef_i == N_chanals-1 & vld_coef_in == '1) | last_data_in == '1)
-//                count_coef_i <= '0;
-//            else if(vld_coef_in == '1)
-//                count_coef_i <= count_coef_i + 1;
-//        end
-//    end
-   
-//	// Задержка входных коэффициентов
-//    always @(posedge clk) 
-//    begin
-//        if(rst == '1)
-//        begin
-//            dataIn_coef_i <= '0;
-//            ena_coef_in_i <= '0;
-//        end
-//        else
-//        begin
-//            dataIn_coef_i[wight_coef_i-1   :            0] <= coefReIn;
-//            dataIn_coef_i[wight_coef_i*2-1 : wight_coef_i] <= coefImIn;
-//            ena_coef_in_i <= vld_coef_in;
-//        end
-//    end   
-    
-//    // Мультиплексор адресов коэффициентов
-//    always @(posedge clk) 
-//    begin
-//        if(rst == '1)
-//            addr_coef_i <= '0;        
-//        else
-//        begin   
-//            case(vld_coef_in) 
-//                // Адрес чтения
-//                1'b0 : addr_coef_i <= chan_coef_i;
-//                // Адрес записи
-//                1'b1 : addr_coef_i <= count_coef_i;
-//                default : addr_coef_i <= '0;
-//            endcase
-//        end
-//    end
-
-//    // Память коэффициентов
-//    blk_mem_gen_0 blk_mem_gen_0_inst
-//    (
-//        .clka (clk),
-//        .ena  ('1), 
-//        .wea  (ena_coef_in_i), 
-//        .addra(addr_coef_i),
-//        .dina (dataIn_coef_i), 
-//        .douta(dataOut_coef_i)
-//    );  
 
 	// Счетчик входных коэффыициентов
 	always @(posedge clk_coef) 
 	begin
-        if(rst == '1)
-            count_coef_i <= '0;
-        else
-        begin
-            if((count_coef_i == N_chanals-1 & vld_coef_in == '1) | last_data_in == '1)
-                count_coef_i <= '0;
-            else if(vld_coef_in == '1)
-                count_coef_i <= count_coef_i + 1;
-        end
+	if(rst == '1)
+	    count_coef_i <= '0;
+	else
+	begin
+	    if((count_coef_i == N_chanals-1 & vld_coef_in == '1) | last_data_in == '1)
+		count_coef_i <= '0;
+	    else if(vld_coef_in == '1)
+		count_coef_i <= count_coef_i + 1;
+	end
     end    
     
     // Задержка адресов коэффициентов на запись
@@ -306,18 +236,7 @@ module FDN_core
         .addrb(addr_coef_out_i),
         .doutb(dataOut_coef_i)
    );                           
-	
-//	// Память коэффициентов
-//	dist_mem_gen_0 dist_mem_gen_0_inst
-//    (
-//        .a         (addr_coef_i),
-//        .d         (dataIn_coef_i),           
-//        .clk       (clk),         
-//        .we        (ena_coef_in_i),          
-//        .qspo_srst (rst),   
-//        .qspo      (dataOut_coef_i)        
-//    );
-    
+
     // Действительная часть коэффициентов из памяти
     assign ram_coefRe_i = dataOut_coef_i[wight_coef_i-1   : 0];
     // Мнимая часть коэффициентов из памяти
